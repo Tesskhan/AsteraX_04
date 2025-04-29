@@ -7,6 +7,9 @@ using UnityEngine;
 
 public class AsteraX : MonoBehaviour
 {
+
+    public GameObject nextLevelPanel;
+    
     // Private Singleton-style instance. Accessed by static property S later in script
     static private AsteraX _S;
 
@@ -51,6 +54,7 @@ public class AsteraX : MonoBehaviour
     [Header("Set in Inspector")]
     [Tooltip("This sets the AsteroidsScriptableObject to be used throughout the game.")]
     public AsteroidsScriptableObject asteroidsSO;
+    private NextLevel nextLevel; // Reference to the NextLevel script
 
     [Header("This will be set by Remote Settings")]
     public string levelProgression = "1:3/2,2:4/2,3:3/3,4:4/3,5:5/3,6:3/4,7:4/4,8:5/4,9:6/4,10:3/5";
@@ -92,21 +96,56 @@ public class AsteraX : MonoBehaviour
         AsteraX.GAME_STATE = AsteraX.eGameState.none;
     }
 
-    void Start()
+    public void StartLevelWithLevelIndex(int levelIndex)
     {
-#if DEBUG_AsteraX_LogMethods
-        Debug.Log("AsteraX:Start()");
-#endif
-
-        ASTEROIDS = new List<Asteroid>();
-		AddScore(0);
+        string[] levels = levelProgression.Split(',');
         
-        // Spawn the parent Asteroids, child Asteroids are taken care of by them
-        for (int i = 0; i < 3; i++)
+        if (levelIndex - 1 >= levels.Length)
         {
-            SpawnParentAsteroid(i);
+            Debug.LogWarning("Level index out of range!");
+            return;
         }
-        GAME_STATE = eGameState.level;
+
+        string[] parts = levels[levelIndex - 1].Split(':');
+        if (parts.Length != 2)
+        {
+            Debug.LogWarning("Invalid level format!");
+            return;
+        }
+
+        string[] asteroidData = parts[1].Split('/');
+        if (asteroidData.Length != 2)
+        {
+            Debug.LogWarning("Invalid asteroid data!");
+            return;
+        }
+
+        int asteroidCount = int.Parse(asteroidData[0]);
+        int childrenPerAsteroid = int.Parse(asteroidData[1]);
+
+        Debug.Log($"Starting level {levelIndex} with {asteroidCount} asteroids, {childrenPerAsteroid} children each");
+
+        // Pass these parameters to your level spawning logic
+        StartLevel(asteroidCount, childrenPerAsteroid);
+
+        // Optionally update current level in NextLevel script
+        nextLevel.SetCurrentLevel(levelIndex + 1);
+    }
+
+    public void StartLevel(int asteroidCount, int childrenPerAsteroid)
+    {
+        // Clear any existing asteroids
+        ASTEROIDS.Clear();
+
+        for (int i = 0; i < asteroidCount; i++)
+        {
+            // Instantiate and initialize asteroids
+            Asteroid a = Instantiate(asteroidPrefab);
+            a.SetChildren(childrenPerAsteroid);
+            ASTEROIDS.Add(a);
+        }
+
+        Debug.Log($"Spawned {asteroidCount} asteroids with {childrenPerAsteroid} children each.");
     }
 
 
@@ -231,6 +270,18 @@ public class AsteraX : MonoBehaviour
         if (ASTEROIDS.IndexOf(asteroid) != -1)
         {
             ASTEROIDS.Remove(asteroid);
+        }
+
+        if (ASTEROIDS.Count == 0)
+        {
+            // Activate the panel directly
+            _S.nextLevelPanel.SetActive(true);
+
+            // Use the already-assigned reference to show the panel
+            _S.nextLevel = _S.nextLevelPanel.GetComponent<NextLevel>();
+
+            GAME_STATE = eGameState.postLevel;
+            _S.nextLevel.ShowPanel(true);
         }
     }
 
