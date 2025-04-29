@@ -8,7 +8,7 @@ public class NextLevel : MonoBehaviour
     private Button nextLevelButton;      // Button to start the next level
 
     private AsteraX asteraX;            // Reference to the AsteraX script
-    private int currentLevel = 0;       // Tracks the current level
+    private int currentLevel = 1;       // Tracks the current level
 
     void Awake()
     {

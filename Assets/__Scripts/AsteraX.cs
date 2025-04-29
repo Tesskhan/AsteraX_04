@@ -22,8 +22,9 @@ public class AsteraX : MonoBehaviour
     // This is an automatic property
     public static int           	SCORE { get; private set; }
     
-    const float MIN_ASTEROID_DIST_FROM_PLAYER_SHIP = 5;
+    public const float MIN_ASTEROID_DIST_FROM_PLAYER_SHIP = 5;
     const float DELAY_BEFORE_RELOADING_SCENE = 4;
+    private int currentLevelIndex = 0;
 
 	public delegate void CallbackDelegate(); // Set up a generic delegate type.
     static public CallbackDelegate GAME_STATE_CHANGE_DELEGATE;
@@ -103,6 +104,7 @@ public class AsteraX : MonoBehaviour
 
     public void StartLevelWithLevelIndex(int levelIndex)
     {
+        currentLevelIndex = levelIndex;
         if (nextLevel == null)
         {
             Debug.LogWarning("NextLevel reference is not set!");
@@ -140,12 +142,22 @@ public class AsteraX : MonoBehaviour
         StartLevel(asteroidCount, childrenPerAsteroid);
 
         // Optionally update current level in NextLevel script
-        nextLevel.SetCurrentLevel(levelIndex);
+        nextLevel.SetCurrentLevel(levelIndex + 1);
     }
 
     public void StartLevel(int asteroidCount, int childrenPerAsteroid)
     {
         // Clear and spawn asteroids using static method
+        ASTEROIDS.Clear();
+        BULLETS.Clear();
+        foreach (Asteroid a in FindObjectsOfType<Asteroid>())
+        {
+            Destroy(a.gameObject);
+        }
+        foreach (Bullet b in FindObjectsOfType<Bullet>())
+        {
+            Destroy(b.gameObject);
+        }
         Asteroid.SpawnAsteroids(asteroidCount, childrenPerAsteroid);
 
         Debug.Log($"Spawned {asteroidCount} asteroids with {childrenPerAsteroid} children each.");
@@ -259,10 +271,16 @@ public class AsteraX : MonoBehaviour
             ASTEROIDS.Remove(asteroid);
         }
 
-        RefreshAsteroidList(); // <-- Ensure all current asteroids are accounted for
+        RefreshAsteroidList();
 
         if (ASTEROIDS.Count == 0)
         {
+            if (_S.currentLevelIndex >= 10)
+            {
+                GameOver(); // Trigger game over
+                return;
+            }
+
             _S.nextLevelPanel.SetActive(true);
             _S.nextLevel = _S.nextLevelPanel.GetComponent<NextLevel>();
             GAME_STATE = eGameState.postLevel;

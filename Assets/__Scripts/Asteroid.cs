@@ -49,11 +49,25 @@ public class Asteroid : MonoBehaviour
     // Use this for initialization
     public static void SpawnAsteroids(int numAsteroids, int numChildAsteroidsPerParent)
     {
+        // Get the player's position
+        Vector3 playerPosition = FindObjectOfType<PlayerShip>().transform.position;
+
         for (int i = 0; i < numAsteroids; i++)
         {
+            Vector3 spawnPosition;
+            do
+            {
+                // Generate a random position within the screen bounds
+                float x = Random.Range(ScreenBounds.BOUNDS.min.x, ScreenBounds.BOUNDS.max.x);
+                float y = Random.Range(ScreenBounds.BOUNDS.min.y, ScreenBounds.BOUNDS.max.y);
+                spawnPosition = new Vector3(x, y, 0);
+            }
+            while (Vector3.Distance(spawnPosition, playerPosition) < AsteraX.MIN_ASTEROID_DIST_FROM_PLAYER_SHIP);
+
             // Create and initialize the parent asteroid
             Asteroid parent = SpawnAsteroid();
             parent.size = AsteraX.AsteroidsSO.initialSize;
+            parent.transform.position = spawnPosition;
             parent.transform.localScale = Vector3.one * parent.size * AsteraX.AsteroidsSO.asteroidScale;
             AsteraX.AddAsteroid(parent);
             parent.InitAsteroidParent();

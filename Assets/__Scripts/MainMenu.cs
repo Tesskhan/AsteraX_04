@@ -6,24 +6,12 @@ public class MainMenu : MonoBehaviour
     [Header("UI Elements (Auto-Detected)")]
     private AsteraX asteraX; // Reference to the main game script
     private GameObject panel;
-    private Text titleText;
-    private Text infoText;
     private Button startButton;
 
     void Awake()
     {
         // Assign the panel as this GameObject
         panel = gameObject;
-
-        // Find TitleText
-        Transform titleTransform = transform.Find("TitleText");
-        if (titleTransform != null)
-            titleText = titleTransform.GetComponent<Text>();
-
-        // Find InfoText
-        Transform infoTransform = transform.Find("InfoText");
-        if (infoTransform != null)
-            infoText = infoTransform.GetComponent<Text>();
 
         // Find StartButton and add listener
         Transform buttonTransform = transform.Find("StartButton");
@@ -62,12 +50,6 @@ public class MainMenu : MonoBehaviour
     {
         if (panel != null)
             panel.SetActive(show);
-
-        if (titleText != null)
-            titleText.enabled = show;
-
-        if (infoText != null)
-            infoText.enabled = show;
 
         if (startButton != null)
             startButton.gameObject.SetActive(show);

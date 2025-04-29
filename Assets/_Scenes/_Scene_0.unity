@@ -398,7 +398,7 @@ GameObject:
   - component: {fileID: 502030310}
   - component: {fileID: 502030309}
   m_Layer: 5
-  m_Name: NextButton
+  m_Name: NextLevelButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2094,7 +2094,7 @@ PrefabInstance:
     - target: {fileID: 198033687449229980, guid: 83aee0f8f8188441486f9023dd802cf6,
         type: 3}
       propertyPath: randomSeed
-      value: -1619027854
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 198033687449229980, guid: 83aee0f8f8188441486f9023dd802cf6,
         type: 3}
@@ -2416,7 +2416,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 36.7, y: 39.28418}
+  m_AnchoredPosition: {x: 36.69995, y: 39.28418}
   m_SizeDelta: {x: -1127.1, y: 147.8}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1944937537
