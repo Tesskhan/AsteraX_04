@@ -8,12 +8,25 @@ public class NextLevel : MonoBehaviour
     private Button nextLevelButton;      // Button to start the next level
 
     private AsteraX asteraX;            // Reference to the AsteraX script
-    private int currentLevel = 2;       // Tracks the current level
+    private int currentLevel = 0;       // Tracks the current level
 
     void Awake()
     {
         // Ensure the panel is hidden before Start
         gameObject.SetActive(false);
+
+        // Find StartButton and add listener
+        Transform buttonTransform = transform.Find("NextLevelButton");
+        if (buttonTransform != null)
+        {
+            nextLevelButton = buttonTransform.GetComponent<Button>();
+            if (nextLevelButton != null)
+                nextLevelButton.onClick.AddListener(OnNextLevelPressed);
+        }
+        else
+        {
+            Debug.LogWarning("NextLevel: Could not find child named 'NextLevelButton'");
+        }
     }
 
     void Start()

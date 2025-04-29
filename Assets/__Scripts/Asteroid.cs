@@ -31,35 +31,49 @@ public class Asteroid : MonoBehaviour
         offScreenWrapper = GetComponent<OffScreenWrapper>();
     }
 
-    // Use this for initialization
     void Start()
     {
-        AsteraX.AddAsteroid(this);
-
         transform.localScale = Vector3.one * size * AsteraX.AsteroidsSO.asteroidScale;
+        
         if (parentIsAsteroid)
         {
             InitAsteroidChild();
         }
         else
         {
+            AsteraX.AddAsteroid(this);
             InitAsteroidParent();
         }
+    }
 
-        // Spawn child Asteroids
-        if (size > 1)
+    // Use this for initialization
+    public static void SpawnAsteroids(int numAsteroids, int numChildAsteroidsPerParent)
+    {
+        for (int i = 0; i < numAsteroids; i++)
         {
-            Asteroid ast;
-            for (int i = 0; i < AsteraX.AsteroidsSO.numSmallerAsteroidsToSpawn; i++)
-            {
-                ast = SpawnAsteroid();
-                ast.size = size - 1;
-                ast.transform.SetParent(transform);
-                Vector3 relPos = Random.onUnitSphere / 2;
-                ast.transform.rotation = Random.rotation;
-                ast.transform.localPosition = relPos;
+            // Create and initialize the parent asteroid
+            Asteroid parent = SpawnAsteroid();
+            parent.size = AsteraX.AsteroidsSO.initialSize;
+            parent.transform.localScale = Vector3.one * parent.size * AsteraX.AsteroidsSO.asteroidScale;
+            AsteraX.AddAsteroid(parent);
+            parent.InitAsteroidParent();
 
-                ast.gameObject.name = gameObject.name + "_" + i.ToString("00");
+            // Spawn children if size allows
+            if (parent.size > 1)
+            {
+                for (int j = 0; j < numChildAsteroidsPerParent; j++)
+                {
+                    Asteroid child = SpawnAsteroid();
+                    child.size = parent.size - 1;
+                    child.transform.SetParent(parent.transform);
+                    child.transform.localPosition = Random.onUnitSphere / 2;
+                    child.transform.rotation = Random.rotation;
+                    child.transform.localScale = Vector3.one * child.size * AsteraX.AsteroidsSO.asteroidScale;
+
+                    child.InitAsteroidChild(); // Ensures kinematic, scaling, etc.
+
+                    child.name = parent.name + "_Child_" + j.ToString("00");
+                }
             }
         }
     }

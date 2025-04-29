@@ -71,6 +71,9 @@ public class AsteraX : MonoBehaviour
         Debug.Log("AsteraX:Awake()");
 #endif
 
+        ASTEROIDS = new List<Asteroid>();
+        BULLETS = new List<Bullet>();
+
         S = this;
         
 		GAME_STATE_CHANGE_DELEGATE += delegate ()
@@ -134,19 +137,12 @@ public class AsteraX : MonoBehaviour
 
     public void StartLevel(int asteroidCount, int childrenPerAsteroid)
     {
-        // Clear any existing asteroids
-        ASTEROIDS.Clear();
-
-        for (int i = 0; i < asteroidCount; i++)
-        {
-            // Instantiate and initialize asteroids
-            Asteroid a = Instantiate(asteroidPrefab);
-            a.SetChildren(childrenPerAsteroid);
-            ASTEROIDS.Add(a);
-        }
+        // Clear and spawn asteroids using static method
+        Asteroid.SpawnAsteroids(asteroidCount, childrenPerAsteroid);
 
         Debug.Log($"Spawned {asteroidCount} asteroids with {childrenPerAsteroid} children each.");
     }
+
 
 
     void SpawnParentAsteroid(int i)
@@ -265,26 +261,29 @@ public class AsteraX : MonoBehaviour
             ASTEROIDS.Add(asteroid);
         }
     }
+
+    static public void RefreshAsteroidList()
+    {
+        ASTEROIDS = new List<Asteroid>(GameObject.FindObjectsOfType<Asteroid>());
+    }
+
     static public void RemoveAsteroid(Asteroid asteroid)
     {
-        if (ASTEROIDS.IndexOf(asteroid) != -1)
+        if (ASTEROIDS.Contains(asteroid))
         {
             ASTEROIDS.Remove(asteroid);
         }
 
+        RefreshAsteroidList(); // <-- Ensure all current asteroids are accounted for
+
         if (ASTEROIDS.Count == 0)
         {
-            // Activate the panel directly
             _S.nextLevelPanel.SetActive(true);
-
-            // Use the already-assigned reference to show the panel
             _S.nextLevel = _S.nextLevelPanel.GetComponent<NextLevel>();
-
             GAME_STATE = eGameState.postLevel;
             _S.nextLevel.ShowPanel(true);
         }
     }
-
     
     static public void GameOver()
     {

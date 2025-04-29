@@ -421,7 +421,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.000022888, y: -276}
+  m_AnchoredPosition: {x: -0.000022888, y: -193.99995}
   m_SizeDelta: {x: 390.831, y: 138.82}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &502030309
@@ -788,9 +788,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3967576c44a751d4498ee811992ddb20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  activeStates: 268435455
-  playerShip: {fileID: 1199415304}
-  startButton: {fileID: 494191554}
 --- !u!114 &615801688
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -989,6 +986,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac05fa88f37f84120b45a830d68341b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nextLevelPanel: {fileID: 1667106883}
   asteroidsSO: {fileID: 11400000, guid: 2b6cec6ca77fe4d49968b9db06f6e657, type: 2}
   levelProgression: 1:3/2,2:4/2,3:3/3,4:4/3,5:5/3,6:3/4,7:4/4,8:5/4,9:6/4,10:3/5
   _gameState: 0
@@ -2036,7 +2034,6 @@ RectTransform:
   - {fileID: 1327556892}
   - {fileID: 615801686}
   - {fileID: 1667106884}
-  - {fileID: 1988841190}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2299,9 +2296,9 @@ GameObject:
   - component: {fileID: 1667106884}
   - component: {fileID: 1667106887}
   - component: {fileID: 1667106886}
-  - component: {fileID: 1667106885}
+  - component: {fileID: 1667106888}
   m_Layer: 5
-  m_Name: NextLevel
+  m_Name: NextLevelPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2319,6 +2316,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1988841190}
   - {fileID: 502030308}
   m_Father: {fileID: 1565448059}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2327,21 +2325,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1667106885
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1667106883}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3967576c44a751d4498ee811992ddb20, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  activeStates: 268435455
-  playerShip: {fileID: 1199415304}
-  startButton: {fileID: 502030309}
 --- !u!114 &1667106886
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2380,6 +2363,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1667106883}
   m_CullTransparentMesh: 1
+--- !u!114 &1667106888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1667106883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69ab3871739eccf42885b48fd330788f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1791361172 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4327711810191756, guid: 8e30bba7ea392274bb56e88c8ba8f11f,
@@ -2512,11 +2507,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1565448059}
+  m_Father: {fileID: 1667106884}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -0.000030517578}
+  m_AnchoredPosition: {x: 0, y: 82}
   m_SizeDelta: {x: 0, y: 280}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1988841191
