@@ -67,29 +67,31 @@ public class AsteraX : MonoBehaviour
 
     private void Awake()
     {
-#if DEBUG_AsteraX_LogMethods
+    #if DEBUG_AsteraX_LogMethods
         Debug.Log("AsteraX:Awake()");
-#endif
+    #endif
 
         ASTEROIDS = new List<Asteroid>();
         BULLETS = new List<Bullet>();
 
         S = this;
-        
-		GAME_STATE_CHANGE_DELEGATE += delegate ()
+
+        // Ensure nextLevel is assigned here
+        if (nextLevelPanel != null)
         {
-            // This is an example of a C# anonymous delegate. It's used to set the state of
-            //  _gameState every time GAME_STATE changes.
-            // Anonymous delegates like this do create "closures" like "this" below, which 
-            //  stores the value of this when the anonymous delegate was created. Closures
-            //  can be slow, but in this case, it is so rarely used that it doesn't matter.
+            nextLevel = nextLevelPanel.GetComponent<NextLevel>();
+        }
+        else
+        {
+            Debug.LogError("NextLevelPanel is not assigned in the Inspector.");
+        }
+
+        GAME_STATE_CHANGE_DELEGATE += delegate ()
+        {
             this._gameState = AsteraX.GAME_STATE;
             S._gameState = AsteraX.GAME_STATE;
         };
-        
-		// This strange use of _gameState as an intermediary in the following lines 
-        //  is solely to stop the Warning from popping up in the Console telling you 
-        //  that _gameState was assigned but not used.
+
         _gameState = eGameState.mainMenu;
         GAME_STATE = _gameState;
     }
@@ -101,8 +103,14 @@ public class AsteraX : MonoBehaviour
 
     public void StartLevelWithLevelIndex(int levelIndex)
     {
+        if (nextLevel == null)
+        {
+            Debug.LogWarning("NextLevel reference is not set!");
+            return;
+        }
+
         string[] levels = levelProgression.Split(',');
-        
+
         if (levelIndex - 1 >= levels.Length)
         {
             Debug.LogWarning("Level index out of range!");
@@ -132,7 +140,7 @@ public class AsteraX : MonoBehaviour
         StartLevel(asteroidCount, childrenPerAsteroid);
 
         // Optionally update current level in NextLevel script
-        nextLevel.SetCurrentLevel(levelIndex + 1);
+        nextLevel.SetCurrentLevel(levelIndex);
     }
 
     public void StartLevel(int asteroidCount, int childrenPerAsteroid)
@@ -142,29 +150,6 @@ public class AsteraX : MonoBehaviour
 
         Debug.Log($"Spawned {asteroidCount} asteroids with {childrenPerAsteroid} children each.");
     }
-
-
-
-    void SpawnParentAsteroid(int i)
-    {
-#if DEBUG_AsteraX_LogMethods
-        Debug.Log("AsteraX:SpawnParentAsteroid("+i+")");
-#endif
-
-        Asteroid ast = Asteroid.SpawnAsteroid();
-        ast.gameObject.name = "Asteroid_" + i.ToString("00");
-        // Find a good location for the Asteroid to spawn
-        Vector3 pos;
-        do
-        {
-            pos = ScreenBounds.RANDOM_ON_SCREEN_LOC;
-        } while ((pos - PlayerShip.POSITION).magnitude < MIN_ASTEROID_DIST_FROM_PLAYER_SHIP);
-
-        ast.transform.position = pos;
-        ast.size = asteroidsSO.initialSize;
-    }
-
-
     
 	public void EndGame()
     {

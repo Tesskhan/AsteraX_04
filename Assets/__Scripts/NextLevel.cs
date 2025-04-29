@@ -15,6 +15,17 @@ public class NextLevel : MonoBehaviour
         // Ensure the panel is hidden before Start
         gameObject.SetActive(false);
 
+        // Find the LevelText child and get its Text component
+        Transform textTransform = transform.Find("LevelText");
+        if (textTransform != null)
+        {
+            levelText = textTransform.GetComponent<Text>();
+        }
+        else
+        {
+            Debug.LogWarning("NextLevel: Could not find child named 'LevelText'");
+        }
+
         // Find StartButton and add listener
         Transform buttonTransform = transform.Find("NextLevelButton");
         if (buttonTransform != null)
