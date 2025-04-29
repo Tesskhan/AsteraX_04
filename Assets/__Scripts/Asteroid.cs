@@ -17,6 +17,7 @@ public class Asteroid : MonoBehaviour
     [Header("Set Dynamically")]
     public int          size = 3;
     public bool         immune = false;
+    public int childAsteroids = 0; // Afegir aquesta línia per definir el nombre d'asteroides fills
 
     Rigidbody           rigid; // protected
     OffScreenWrapper    offScreenWrapper;
@@ -45,12 +46,14 @@ public class Asteroid : MonoBehaviour
         {
             InitAsteroidParent();
         }
+    }
 
+    public void spawnChildAsteroids(){
         // Spawn child Asteroids
         if (size > 1)
         {
             Asteroid ast;
-            for (int i = 0; i < AsteraX.AsteroidsSO.numSmallerAsteroidsToSpawn; i++)
+            for (int i = 0; i < childAsteroids; i++)
             {
                 ast = SpawnAsteroid();
                 ast.size = size - 1;
