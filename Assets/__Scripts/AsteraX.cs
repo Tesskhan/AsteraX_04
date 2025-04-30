@@ -9,6 +9,7 @@ public class AsteraX : MonoBehaviour
 {
 
     public GameObject nextLevelPanel;
+    public GameObject pausePanel;
     
     // Private Singleton-style instance. Accessed by static property S later in script
     static private AsteraX _S;
@@ -193,6 +194,7 @@ public class AsteraX : MonoBehaviour
         // Check for the P key press to toggle pause
         if (Input.GetKeyDown(KeyCode.P))
         {
+            pausePanel.SetActive(!pausePanel.activeSelf); // Toggle the pause panel visibility
             TogglePause();
         }
     }
