@@ -63,7 +63,7 @@ public class NextLevel : MonoBehaviour
     {
         if (levelText != null)
         {
-            levelText.text = "Level " + currentLevel;
+            levelText.text = "Level " + (currentLevel+1);
         }
     }
 
@@ -83,7 +83,7 @@ public class NextLevel : MonoBehaviour
         // Tell AsteraX to start the next level using currentLevel
         if (asteraX != null)
         {
-            asteraX.StartLevelWithLevelIndex(currentLevel);
+            asteraX.StartLevelWithLevelIndex();
         }
     }
 }

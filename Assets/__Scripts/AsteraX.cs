@@ -24,7 +24,7 @@ public class AsteraX : MonoBehaviour
     
     public const float MIN_ASTEROID_DIST_FROM_PLAYER_SHIP = 5;
     const float DELAY_BEFORE_RELOADING_SCENE = 4;
-    private int currentLevelIndex = 0;
+    private float currentLevelIndex = 1f;
 
 	public delegate void CallbackDelegate(); // Set up a generic delegate type.
     static public CallbackDelegate GAME_STATE_CHANGE_DELEGATE;
@@ -66,6 +66,8 @@ public class AsteraX : MonoBehaviour
         + "GAME_STATE_CHANGE_DELEGATE whenever GAME_STATE changes.")]
     protected eGameState  _gameState;
 
+    private bool isPaused = false; // Track whether the game is paused
+
     private void Awake()
     {
     #if DEBUG_AsteraX_LogMethods
@@ -102,24 +104,31 @@ public class AsteraX : MonoBehaviour
         AsteraX.GAME_STATE = AsteraX.eGameState.none;
     }
 
-    public void StartLevelWithLevelIndex(int levelIndex)
+    private void Start()
     {
-        currentLevelIndex = levelIndex;
+        // Initialize the game state to main menu
+        GAME_STATE = eGameState.mainMenu;
+
+    }
+
+    public void StartLevelWithLevelIndex()
+    {
         if (nextLevel == null)
         {
             Debug.LogWarning("NextLevel reference is not set!");
             return;
         }
-
+        currentLevelIndex += 0.5f;
+        Debug.Log($"Starting level {currentLevelIndex}...");
         string[] levels = levelProgression.Split(',');
 
-        if (levelIndex - 1 >= levels.Length)
+        if (currentLevelIndex - 1 >= levels.Length)
         {
             Debug.LogWarning("Level index out of range!");
             return;
         }
 
-        string[] parts = levels[levelIndex - 1].Split(':');
+        string[] parts = levels[(int)currentLevelIndex - 1].Split(':');
         if (parts.Length != 2)
         {
             Debug.LogWarning("Invalid level format!");
@@ -136,13 +145,13 @@ public class AsteraX : MonoBehaviour
         int asteroidCount = int.Parse(asteroidData[0]);
         int childrenPerAsteroid = int.Parse(asteroidData[1]);
 
-        Debug.Log($"Starting level {levelIndex} with {asteroidCount} asteroids, {childrenPerAsteroid} children each");
+        Debug.Log($"Starting level {currentLevelIndex} with {asteroidCount} asteroids, {childrenPerAsteroid} children each");
 
         // Pass these parameters to your level spawning logic
         StartLevel(asteroidCount, childrenPerAsteroid);
 
         // Optionally update current level in NextLevel script
-        nextLevel.SetCurrentLevel(levelIndex + 1);
+        nextLevel.SetCurrentLevel((int)currentLevelIndex);
     }
 
     public void StartLevel(int asteroidCount, int childrenPerAsteroid)
@@ -179,6 +188,32 @@ public class AsteraX : MonoBehaviour
         UnityEngine.SceneManagement.SceneManager.LoadScene(0);
     }
 
+    void Update()
+    {
+        // Check for the P key press to toggle pause
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            TogglePause();
+        }
+    }
+
+    private void TogglePause()
+    {
+        if (isPaused)
+        {
+            // Unpause the game
+            Time.timeScale = 1f;
+            isPaused = false;
+            Debug.Log("Game unpaused");
+        }
+        else
+        {
+            // Pause the game
+            Time.timeScale = 0f;
+            isPaused = true;
+            Debug.Log("Game paused");
+        }
+    }
 
 
     // ---------------- Static Section ---------------- //
@@ -250,6 +285,14 @@ public class AsteraX : MonoBehaviour
         }
     }
 
+    static public int GAME_LEVEL
+    {
+        get
+        {
+            return (int)S.currentLevelIndex; // Return the current level index
+        }
+    }
+
     
 	static public void AddAsteroid(Asteroid asteroid)
     {
@@ -281,7 +324,6 @@ public class AsteraX : MonoBehaviour
                 return;
             }
 
-            _S.nextLevelPanel.SetActive(true);
             _S.nextLevel = _S.nextLevelPanel.GetComponent<NextLevel>();
             GAME_STATE = eGameState.postLevel;
             _S.nextLevel.ShowPanel(true);

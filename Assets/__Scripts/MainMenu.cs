@@ -43,7 +43,7 @@ public class MainMenu : MonoBehaviour
 
         // Change game state
         AsteraX.GAME_STATE = AsteraX.eGameState.preLevel;
-        asteraX.StartLevelWithLevelIndex(1);
+        asteraX.StartLevelWithLevelIndex();
     }
 
     private void ShowMenu(bool show)
